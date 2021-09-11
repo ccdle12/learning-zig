@@ -10,7 +10,7 @@ test "if statement" {
     } else {
         x += 2;
     }
-
+    
     try expect(x == 1);
 }
 
