@@ -10,6 +10,7 @@ const expect = std.testing.expect;
 const print = std.debug.print;
 const Allocator = std.mem.Allocator;
 const testing = std.testing;
+const os = std.os;
 
 // To do generics in zig, we need to return a struct from a function. Usually
 // with an internal type (Node). We can think of this function as a sort of
