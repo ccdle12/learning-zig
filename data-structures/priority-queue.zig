@@ -35,21 +35,27 @@ fn PriorityQueue(comptime T: type, size: usize) type {
         }
 
         fn heapify_down(self: *Self, index: usize) void {
-            var largest = index;
-            var left = self.left_child(index);
-            var right = self.right_child(index);
+            var current = index;
+            var largest = current;
+            var left = self.left_child(largest);
+            var right = self.right_child(largest);
+           
+            while (largest < size - 1) {
+                if (left < size and self.heap[index].priority < self.heap[left].priority) {
+                    largest = left; 
+                } 
 
-            if (left < size and self.heap[index].priority < self.heap[left].priority) {
-                largest = left; 
-            } 
-         
-            if (right < size and self.heap[largest].priority < self.heap[right].priority) {
-                largest = right;
-            }
+                if (right < size and self.heap[largest].priority < self.heap[right].priority) {
+                    largest = right;
+                }
 
-            if (largest != index) {
-                self.swap(largest, index);
-                self.heapify_down(largest);
+                if (largest == current) return;
+
+                self.swap(largest, current);
+                current = largest;
+                largest = current;
+                left = self.left_child(largest);
+                right = self.right_child(largest);
             }
         }
 
@@ -61,12 +67,14 @@ fn PriorityQueue(comptime T: type, size: usize) type {
         }
 
         fn heapify_up(self: *Self, index: usize) void {
-            if (index == 0) return;
-
-            const parent = self.parent_index(index);
-            if (self.heap[parent].priority < self.heap[index].priority) {
-                self.swap(parent, index);
-                self.heapify_up(parent);
+            var current = index;
+            while (current > 0) {
+                const parent = self.parent_index(current);
+                if (self.heap[parent].priority > self.heap[current].priority)
+                    return;
+                
+                self.swap(parent, current);
+                current = parent;
             }
         }
 
