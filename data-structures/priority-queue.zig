@@ -16,9 +16,9 @@ fn PriorityQueue(comptime T: type, size: usize) type {
         heap: [size]Node,
 
         pub fn init() Self {
-            var pq_nodes: [6]Self.Node = undefined;
-            for (pq_nodes) |*node, i| node.* = .{ .value = 0, .priority = 0 };
-            return Self { .heap = pq_nodes };
+            var pq_nodes: [size]Self.Node = undefined;
+            for (pq_nodes) |*node| node.* = .{ .value = 0, .priority = 0 };
+            return Self{ .heap = pq_nodes };
         }
 
         pub fn peek(self: *Self) T {
@@ -29,21 +29,22 @@ fn PriorityQueue(comptime T: type, size: usize) type {
             const value = self.peek();
 
             self.heap[0] = self.heap[size - 1];
-            self.heapify_down(0); 
+            self.heapify_down(0);
 
             return value;
         }
 
+        // Time Complexity: O(log n)
         fn heapify_down(self: *Self, index: usize) void {
             var current = index;
             var largest = current;
             var left = self.left_child(largest);
             var right = self.right_child(largest);
-           
+
             while (largest < size - 1) {
                 if (left < size and self.heap[index].priority < self.heap[left].priority) {
-                    largest = left; 
-                } 
+                    largest = left;
+                }
 
                 if (right < size and self.heap[largest].priority < self.heap[right].priority) {
                     largest = right;
@@ -66,38 +67,41 @@ fn PriorityQueue(comptime T: type, size: usize) type {
             self.heapify_up(size - 1);
         }
 
+        // Time Complexity: O(log n)
         fn heapify_up(self: *Self, index: usize) void {
             var current = index;
             while (current > 0) {
                 const parent = self.parent_index(current);
                 if (self.heap[parent].priority > self.heap[current].priority)
                     return;
-                
+
                 self.swap(parent, current);
                 current = parent;
             }
         }
 
         inline fn left_child(self: *Self, index: usize) usize {
+            _ = self;
             return (2 * index) + 1;
         }
 
         inline fn right_child(self: *Self, index: usize) usize {
+            _ = self;
             return (2 * index) + 2;
         }
 
         inline fn parent_index(self: *Self, index: usize) usize {
+            _ = self;
             return (index - 1) / 2;
         }
 
         inline fn swap(self: *Self, a: usize, b: usize) void {
-           var tmp = self.heap[a]; 
-           self.heap[a] = self.heap[b];
-           self.heap[b] = tmp;
+            var tmp = self.heap[a];
+            self.heap[a] = self.heap[b];
+            self.heap[b] = tmp;
         }
     };
 }
-
 
 test "Priority Queue" {
     const priorityQueue = PriorityQueue(u8, 6);
@@ -118,4 +122,7 @@ test "Priority Queue" {
     try expect(pq.peek() == 100);
     try expect(pq.pop() == 100);
     try expect(pq.peek() == 159);
+
+    pq.push(1, 200);
+    try expect(pq.peek() == 1);
 }
