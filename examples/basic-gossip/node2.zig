@@ -64,6 +64,11 @@ pub fn main() !void {
     // var queue = std.TailQueue();
 
     // TODO: extract
+const LoopFrame = struct { frame: anyframe };
+
+pub fn main() !void {
+    const this_port = 9001;
+
     var peer_list: [3]Node = undefined;
     var i: u16 = 0;
     while (i < 3) : (i += 1) {
@@ -82,6 +87,9 @@ pub fn main() !void {
     // with an fd.
     //
     // TODO: This should be in an async retry, so that we can keep trying to connect.
+        peer_list[i] = Node{ .addr = try net.Address.parseIp("127.0.0.1", port) };
+    }
+
     for (peer_list) |_, index| {
         var fd = os.socket(os.AF.INET, os.SOCK.STREAM, os.IPPROTO.TCP) catch unreachable;
 
